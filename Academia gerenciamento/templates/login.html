@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Gold Muscles Gerenciamento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="login-body">
+
+    <div class="login-box">
+        <h2>Gold<span>Muscles</span><br><small style="font-size: 1rem; color: #fff; font-weight: normal;">Gerenciamento Operacional</small></h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-msg flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="form-group" style="text-align: left;">
+                <label>Usuário</label>
+                <div style="position: relative;">
+                    <i class="fas fa-user" style="position: absolute; left: 15px; top: 15px; color: #aaa;"></i>
+                    <input type="text" name="username" class="form-control" required style="padding-left: 40px;" placeholder="Ex: dono ou func">
+                </div>
+            </div>
+            <div class="form-group" style="text-align: left;">
+                <label>Senha</label>
+                <div style="position: relative;">
+                    <i class="fas fa-lock" style="position: absolute; left: 15px; top: 15px; color: #aaa;"></i>
+                    <input type="password" name="password" class="form-control" required style="padding-left: 40px;" placeholder="***">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1.1rem; margin-top: 10px;">Entrar no Sistema</button>
+        </form>
+    </div>
+
+</body>
+</html>

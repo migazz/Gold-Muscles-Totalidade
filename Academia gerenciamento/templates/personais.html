@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Personais{% endblock %}
+{% block page_title %}Nosso Time de Trainers{% endblock %}
+
+{% block content %}
+<div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
+    <!-- Lista Existente -->
+    <div class="panel" style="flex: 2; min-width: 300px;">
+        <h2>Personais Ativos</h2>
+        <p style="color: #aaa; margin-bottom: 20px;">Estes profissionais aparecem ativamente no site principal dos alunos.</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Especialidade</th>
+                    <th>Dias</th>
+                    <th>Horários</th>
+                    {% if session.role == 'dono' %}
+                    <th>Ações</th>
+                    {% endif %}
+                </tr>
+
+            </thead>
+            <tbody>
+                {% for p in personais %}
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 45px; height: 45px; border-radius: 50%; background: #333; overflow: hidden; border: 2px solid var(--gold);">
+                                <img src="{{ url_for('static', filename='img/' + p.imagem_url) }}" alt="Foto" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <strong>{{ p.nome }}</strong>
+                        </div>
+
+                    </td>
+                    <td>{{ p.descricao }}</td>
+                    <td>{{ p.dias }}</td>
+                    <td><span style="color: var(--gold);">{{ p.horarios }}</span></td>
+                    {% if session.role == 'dono' %}
+                    <td>
+                        <a href="{{ url_for('deletar_personal', id=p.id) }}" class="btn btn-danger" title="Demitir" onclick="return confirm('Deseja realmente remover este personal?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                    {% endif %}
+                </tr>
+
+                {% else %}
+                <tr><td colspan="4" style="text-align: center; color: #aaa;">Nenhum personal cadastrado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Cadastro -->
+    {% if session.role == 'dono' %}
+    <div class="panel" style="flex: 1; min-width: 300px;">
+        <h2>Novo Personal</h2>
+        <form method="POST" action="{{ url_for('personais') }}">
+            <div class="form-group">
+                <label>Nome Completo</label>
+                <input type="text" name="nome" class="form-control" required placeholder="Ex: Ana Souza">
+            </div>
+            <div class="form-group">
+                <label>Especialidade</label>
+                <input type="text" name="descricao" class="form-control" required placeholder="Ex: Mestre em Pilates">
+            </div>
+            <div class="form-group">
+                <label>Dias de Atuação</label>
+                <input type="text" name="dias" class="form-control" required placeholder="Ex: Seg a Sex">
+            </div>
+            <div class="form-group">
+                <label>Horários</label>
+                <input type="text" name="horarios" class="form-control" required placeholder="Ex: 08:00 - 15:00">
+            </div>
+            <div class="form-group">
+                <label>Nome da Foto (no servidor)</label>
+                <input type="text" name="imagem_url" class="form-control" required placeholder="Ex: ana.jpg">
+                <small style="color: #666; display: block; margin-top: 5px;">A imagem deve ser colocada manualmente na pasta static/img do site principal primeiro.</small>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;"><i class="fas fa-plus"></i> Publicar no Site</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

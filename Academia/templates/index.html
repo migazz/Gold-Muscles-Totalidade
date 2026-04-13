@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Muscles | Elite Fitness Academy</title>
+    <!-- Adicionando Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Arquivo de estilos personalizado -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Biblioteca de Máscaras iMask -->
+    <script src="https://unpkg.com/imask"></script>
+</head>
+
+<body>
+
+    <!-- Header com Botões de Ação (Tópicos) -->
+    <header>
+        <nav class="nav-container">
+            <div class="logo">GOLD<span>MUSCLES</span></div>
+            <div class="nav-links">
+                <a href="#home">Início</a>
+                <a href="#planos">Planos</a>
+                <a href="#personais">Personais</a>
+                <a href="#localizacao">Localização</a>
+                <a href="#contato">Contato</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Fim Header -->
+
+    <!-- Seção Hero (Abertura Direta) -->
+    <section id="home" class="hero">
+        <h1>FORJA<span>DO</span> EM OURO</h1>
+        <p>A experiência fitness mais premium da região. Equipamentos de última geração e atendimento personalizado em
+            um ambiente exclusivo.</p>
+        <div class="hero-btns">
+            <a href="#planos" class="btn-primary">Ver Planos</a>
+        </div>
+    </section>
+
+    <!-- Seção de Planos (Vindo do Banco de Dados) -->
+    <section id="planos">
+        <div class="section-title">
+            <h2>Nossos Planos</h2>
+            <div class="underline"></div>
+        </div>
+        <div class="planos-container">
+            {% for plano in planos %}
+            <div class="plano-card {% if plano.nome == 'Plano Gold' %}featured{% endif %}">
+                <h3>{{ plano.nome }}</h3>
+                <div class="price">R$ {{ "%.2f"|format(plano.valor) }}<span>/mês</span></div>
+                <ul>
+                    {% for beneficio in plano.get_beneficios_list() %}
+                    <li>{{ beneficio.strip() }}</li>
+                    {% endfor %}
+                </ul>
+                <button class="btn-primary btn-matricular" data-id="{{ plano.id }}" data-nome="{{ plano.nome }}"
+                    style="border:none; cursor:pointer; font-size:1rem; outline:none;">Assinar Agora</button>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Seção de Personais (Carrossel Dinâmico) -->
+    <section id="personais">
+        <div class="section-title">
+            <h2>Nossos Personais</h2>
+            <div class="underline"></div>
+        </div>
+
+        <div class="carousel-wrapper">
+            <div class="carousel-container">
+                {% for personal in personais %}
+                <div class="personal-card">
+                    <img src="{{ url_for('static', filename='img/' + personal.imagem_url) }}" alt="{{ personal.nome }}"
+                        class="personal-img">
+                    <div class="personal-info">
+                        <h3>{{ personal.nome }}</h3>
+                        <p>{{ personal.descricao }}</p>
+                        <div class="schedule">
+                            <p><strong><i class="far fa-calendar-alt"></i> Dias:</strong> {{ personal.dias }}</p>
+                            <p><strong><i class="far fa-clock"></i> Horário:</strong> {{ personal.horarios }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="carousel-nav">
+                <button class="carousel-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção de Localização -->
+    <section id="localizacao" style="background: var(--lead-light);">
+        <div class="section-title">
+            <h2>Onde Estamos</h2>
+            <div class="underline"></div>
+        </div>
+        <div style="text-align: center; max-width: 900px; margin: 0 auto;">
+            <p style="font-size: 1.2rem; margin-bottom: 30px;">
+                <i class="fas fa-map-marker-alt" style="color: var(--gold);"></i>
+                Al Haram, Giza Governorate 3512201, Egito
+            </p>
+            <!-- Mapa Interativo do Google Maps -->
+            <!-- Para trocar o endereço: substitua o texto depois de q= pela lat/lon ou endereço desejado -->
+            <div
+                style="border-radius: 20px; overflow: hidden; border: 1px solid rgba(255, 215, 0, 0.4); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <iframe src="https://www.google.com/maps?q=Al+Haram,+Giza+Governorate,+Egito&output=embed" width="100%"
+                    height="420" frameborder="0" style="border: 0; display: block;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rodapé e Redes Sociais -->
+    <footer id="contato">
+        <div class="section-title">
+            <h2>Siga-nos</h2>
+            <div class="underline"></div>
+        </div>
+        <div class="social-links">
+            <a href="https://instagram.com/goldmuscles" target="_blank" class="social-btn"><i
+                    class="fab fa-instagram"></i></a>
+            <a href="https://facebook.com/goldmuscles" target="_blank" class="social-btn"><i
+                    class="fab fa-facebook"></i></a>
+            <a href="https://wa.me/5500000000000?text=Olá,%20vi%20o%20site%20da%20Gold%20Muscles%20e%20gostaria%20de%20mais%20informações%20sobre%20os%20planos!"
+                target="_blank" class="social-btn"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <p style="opacity: 0.6; font-size: 0.8rem;">&copy; 2024 Gold Muscles Academy. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Modal de Matrícula (Janela Flutuante) -->
+    <div class="modal-overlay" id="matriculaModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+
+            <!-- Formulário -->
+            <div id="form-content">
+                <h2 class="modal-title">Matricule-se</h2>
+                <p style="margin-bottom: 20px; opacity: 0.8;">Plano escolhido: <strong id="planoEscolhidoNome"
+                        style="color:var(--gold);">Gold</strong></p>
+
+                <form id="matriculaForm">
+                    <input type="hidden" id="plano_id" name="plano_id" value="">
+
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" class="form-control" id="nome" name="nome" required
+                            placeholder="Ex: João da Silva">
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email" required
+                            placeholder="seu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp</label>
+                        <input type="tel" class="form-control" id="telefone" name="telefone" required
+                            placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" class="form-control" id="cpf" name="cpf" required
+                            placeholder="000.000.000-00">
+                    </div>
+                    <div class="form-group">
+                        <label>Forma de Pagamento</label>
+                        <select class="form-control" id="metodo_pagamento" name="metodo_pagamento" required>
+                            <option value="" disabled selected>Selecione uma opção</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="PIX">PIX</option>
+                            <option value="Boleto">Boleto Bancário</option>
+                        </select>
+                    </div>
+
+                    <!-- Campos do Cartão (Escondidos por padrão) -->
+                    <div id="cartao-fields"
+                        style="display: none; border: 1px solid rgba(255, 215, 0, 0.2); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label>Número do Cartão</label>
+                            <input type="text" class="form-control" id="numero_cartao"
+                                placeholder="0000 0000 0000 0000">
+                        </div>
+                        <div style="display: flex; gap: 15px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>Validade</label>
+                                <input type="text" class="form-control" id="validade_cartao" placeholder="MM/AA">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>CVV</label>
+                                <input type="text" class="form-control" id="cvv_cartao" placeholder="000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-submit" id="btnSubmitForm">Concluir Matrícula</button>
+                </form>
+            </div>
+
+            <!-- Tela de Sucesso Integrada (Opção A) -->
+            <div id="success-message">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 style="color: var(--gold); margin-bottom: 15px;">Matrícula Pré-Aprovada!</h2>
+                <p style="font-size: 1.1rem; opacity: 0.9;">Tudo certo! Compareça à recepção da Gold Muscles em até 48h
+                    para assinar seu contrato e ativar sua biometria.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Arquivo JavaScript personalizado -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Visão Geral{% endblock %}
+{% block page_title %}Dashboard de Negócios{% endblock %}
+
+{% block content %}
+<div class="cards-container">
+    <div class="card">
+        <i class="fas fa-users card-icon"></i>
+        <div class="card-info">
+            <h3>{{ total }}</h3>
+            <p>Alunos Registrados</p>
+        </div>
+    </div>
+    <div class="card">
+        <i class="fas fa-dumbbell card-icon"></i>
+        <div class="card-info">
+            <h3>{{ p_total }}</h3>
+            <p>Personal Trainers</p>
+        </div>
+    </div>
+    <div class="card">
+        <i class="fas fa-clipboard-check card-icon"></i>
+        <div class="card-info">
+            <h3>{{ f_total }}</h3>
+            <p>Fichas de Treino Ativas</p>
+        </div>
+    </div>
+</div>
+
+<div class="panel">
+    <h2>Últimas Matrículas (Pelo Site)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nome do Aluno</th>
+                <th>Telefone</th>
+                <th>Data</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aluno in recentes %}
+            <tr>
+                <td>{{ aluno.nome }}</td>
+                <td>{{ aluno.telefone }}</td>
+                <td>{{ aluno.data_matricula.strftime('%d/%m/%Y') }}</td>
+                <td>
+                    {% if aluno.status == 'Pendente' %}
+                        <span class="status pendente">Pré-Matrícula</span>
+                    {% else %}
+                        <span class="status ativo">Ativo</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align: center; color: #aaa;">Nenhuma matrícula recebida.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="margin-top: 20px; text-align: right;">
+        <a href="{{ url_for('alunos') }}" class="btn btn-primary" style="text-decoration: none;">Ver todos</a>
+    </div>
+</div>
+{% endblock %}

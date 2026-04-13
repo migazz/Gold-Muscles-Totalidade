@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Alunos{% endblock %}
+{% block page_title %}Gerenciamento de Alunos{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <h2>Lista de Alunos Registrados</h2>
+    <p style="margin-bottom: 20px; color: #aaa;">As matrículas feitas pelo site caem aqui como "Pré-Matrículas". Apenas os <strong>Diretores</strong> podem aprova-las e ativar o aluno após o pagamento na recepção.</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome Completo</th>
+                <th>Telefone / WhatsApp</th>
+                <th>CPF</th>
+                <th>Plano Contratado</th>
+                <th>Status Atual</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aluno in alunos %}
+            <tr>
+                <td>#{{ aluno.id }}</td>
+                <td><strong>{{ aluno.nome }}</strong><br><small style="color: #aaa;">{{ aluno.email }}</small></td>
+                <td>{{ aluno.telefone }}</td>
+                <td>{{ aluno.cpf }}</td>
+                <td><strong style="color: var(--gold);">{{ aluno.plano.nome }}</strong></td>
+                <td>
+                    {% if aluno.status == 'Pendente' %}
+                        <span class="status pendente">Pré-Matrícula</span>
+                    {% elif aluno.status == 'Inativo' %}
+                        <span class="status inativo">Inativo</span>
+                    {% else %}
+                        <span class="status ativo">Ativo</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display: flex; gap: 5px;">
+                        {% if session.role == 'dono' %}
+                            {% if aluno.status == 'Pendente' or aluno.status == 'Inativo' %}
+                                <a href="{{ url_for('aprovar_aluno', id=aluno.id) }}" class="btn btn-success" title="{% if aluno.status == 'Inativo' %}Reativar Aluno{% else %}Aprovar Matrícula{% endif %}">
+                                    <i class="fas fa-check"></i> {% if aluno.status == 'Inativo' %}Reativar{% endif %}
+                                </a>
+                            {% endif %}
+                            
+                            {% if aluno.status == 'Ativo' %}
+                            <a href="{{ url_for('inativar_aluno', id=aluno.id) }}" class="btn btn-warning" title="Inativar Aluno">
+                                <i class="fas fa-user-slash"></i>
+                            </a>
+                            {% endif %}
+                            
+                            <a href="{{ url_for('deletar_aluno', id=aluno.id) }}" class="btn btn-danger" title="Excluir Permanentemente" onclick="return confirm('ATENÇÃO: Você tem certeza que deseja EXCLUIR este aluno? Essa ação não pode ser desfeita.')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        {% else %}
+                            <span style="font-size: 0.8rem; color: #aaa;">Sem permissão</span>
+                        {% endif %}
+
+                    </div>
+                </td>
+            </tr>
+
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: #aaa;">Nenhum aluno encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

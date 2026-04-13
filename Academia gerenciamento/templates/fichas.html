@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Fichas de Treino{% endblock %}
+{% block page_title %}Construtor de Fichas{% endblock %}
+
+{% block content %}
+<div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
+
+    <!-- Criar Nova Ficha -->
+    <div class="panel" style="flex: 1; min-width: 300px; border-color: var(--gold);">
+        <h2 style="color: var(--gold);"><i class="fas fa-edit"></i> Nova Ficha de Treino</h2>
+        <form method="POST" action="{{ url_for('fichas') }}">
+            <div class="form-group">
+                <label>Selecionar Aluno (Apenas Ativos)</label>
+                <select name="matricula_id" class="form-control" required style="cursor: pointer;">
+                    <option value="" disabled selected>-- Escolha um Aluno --</option>
+                    {% for a in alunos %}
+                    <option value="{{ a.id }}">{{ a.nome }} ({{ a.plano.nome }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Vincular Personal Trainer</label>
+                <select name="personal_id" class="form-control" required style="cursor: pointer;">
+                    <option value="" disabled selected>-- Treinador Responsável --</option>
+                    {% for p in personais %}
+                    <option value="{{ p.id }}">{{ p.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Treino Livre (Anotações e Séries)</label>
+                <textarea name="texto_treino" class="form-control" rows="10" required placeholder="Ex:&#10;Aquecimento: 10 min esteira&#10;&#10;Treino A (Peito e Tríceps):&#10;Supino Reto - 4x10&#10;Crucifixo - 3x12&#10;Tríceps Polia - 4x12" style="resize: vertical; font-family: monospace;"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="fas fa-save"></i> Salvar Ficha no Sistema</button>
+        </form>
+    </div>
+
+    <!-- Lista de Fichas Criadas -->
+    <div class="panel" style="flex: 1; min-width: 300px;">
+        <h2>Fichas Recentes</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            {% for ficha in fichas %}
+            <div class="ficha-card" style="background: rgba(255, 255, 255, 0.02); padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold);">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <strong style="font-size: 1.2rem;">{{ ficha.matricula.nome }}</strong>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span style="color: #aaa; font-size: 0.8rem;">Data: {{ ficha.data_criacao.strftime('%d/%m/%Y') }}</span>
+                        <button class="btn btn-primary no-print" style="padding: 5px 10px; font-size: 0.7rem;" onclick="imprimirFicha('ficha-{{ ficha.id }}')"><i class="fas fa-print"></i> IMPRIMIR</button>
+                    </div>
+                </div>
+
+                <!-- Bloco Minimalista com ID Único -->
+                <div id="ficha-{{ ficha.id }}" class="print-area">
+                    <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
+                        <h1 style="font-size: 24pt; margin: 0; color: #000;">GOLD <span style="color: #B8860B;">MUSCLES</span></h1>
+                        <p style="margin: 5px 0; font-size: 12pt;">FICHA DE TREINAMENTO</p>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p><strong>ALUNO:</strong> {{ ficha.matricula.nome }}</p>
+                        <p><strong>PERSONAL:</strong> {{ ficha.personal.nome }}</p>
+                        <p><strong>DATA:</strong> {{ ficha.data_criacao.strftime('%d/%m/%Y') }}</p>
+                    </div>
+                    <div style="border: 1px solid #ccc; padding: 20px; font-family: 'Courier New', Courier, monospace; font-size: 11pt; line-height: 1.5; color: #000; white-space: pre-wrap;">{{ ficha.texto_treino }}</div>
+                    <div style="margin-top: 30px; text-align: center; font-size: 9pt; color: #666;">
+                        Gerado via Sistema Gold Muscles Management
+                    </div>
+                </div>
+
+
+                <div class="no-print">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--gold);">
+                            <img src="{{ url_for('static', filename='img/' + ficha.personal.imagem_url) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <p style="color: #aaa; font-size: 0.9rem; margin: 0;"><i class="fas fa-dumbbell" style="color: var(--gold);"></i> Prescrito por: {{ ficha.personal.nome }}</p>
+                    </div>
+                    <div style="background: #111; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 0.9rem; white-space: pre-wrap; color: #ccc;">{{ ficha.texto_treino }}</div>
+                </div>
+            </div>
+
+
+            {% else %}
+            <p style="text-align: center; color: #aaa;">Nenhuma ficha criada ainda.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function imprimirFicha(id) {
+    // Remove a marcação de qualquer outra ficha
+    document.querySelectorAll('.print-area').forEach(el => el.classList.remove('active-print'));
+    
+    // Marca a ficha atual para ser a única visível na impressão
+    const ficha = document.getElementById(id);
+    if (ficha) {
+        ficha.classList.add('active-print');
+        window.print();
+    }
+}
+</script>
+{% endblock %}
+

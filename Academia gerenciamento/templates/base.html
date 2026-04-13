@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %} - Gold Muscles Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            Gold<span>Muscles</span>
+            <div style="font-size: 0.8rem; color: #aaa; font-weight: normal; margin-top: 5px;">Acesso: {{ session.role | title }}</div>
+        </div>
+        
+        <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="{{ url_for('alunos') }}" class="nav-link {% if request.endpoint == 'alunos' %}active{% endif %}">
+            <i class="fas fa-users"></i> Alunos
+        </a>
+        <a href="{{ url_for('personais') }}" class="nav-link {% if request.endpoint == 'personais' %}active{% endif %}">
+            <i class="fas fa-dumbbell"></i> Personais
+        </a>
+        <a href="{{ url_for('fichas') }}" class="nav-link {% if request.endpoint == 'fichas' %}active{% endif %}">
+            <i class="fas fa-clipboard-list"></i> Fichas de Treino
+        </a>
+        
+        <a href="{{ url_for('logout') }}" class="nav-link logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Sair do Sistema
+        </a>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <h1>{% block page_title %}{% endblock %}</h1>
+            <div class="user-info" style="display: flex; align-items: center; gap: 15px;">
+                <span style="color: #aaa;">Olá, <strong style="color: var(--gold);">{{ session.username | title }}</strong>!</span>
+                <div style="width: 40px; height: 40px; background: var(--gold); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #000; font-weight: bold;">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-msg flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="content-body">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+
